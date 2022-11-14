@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import requests
-import requests
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -19,7 +18,6 @@ from nltk.corpus import stopwords
 
 from flask import Flask, request, jsonify
 import random
-import numpy as np
 import markdown.extensions.fenced_code
 import tools.sql_queries as esecuele
 
@@ -41,46 +39,50 @@ def readme ():
 def sql ():
     return jsonify(esecuele.get_everything())
 
-#getting everything FROM  BRANCH
-@app.route("/sql/<disney_branch>", )
-def reviews_from_branches (disney_branch):
-    return jsonify(esecuele.get_everything_from_branch(disney_branch))
 
-#getting everything FROM  COUNTRY
-@app.route("/sql/<country>", )
+#getting everything FROM  COUNTRY -----------------------------------------------EMPTY LIST---------------------
+@app.route("/<country>" )
 def reviews_from_locations (country):
     return jsonify(esecuele.get_everything_from_location(country))
 
-
-#getting everything FROM  YEAR
-@app.route("/sql/<year>", )
-def reviews_from_year (year):
-    return jsonify(esecuele.get_everything_from_year(year))
-
-
 #getting Reviews & Compound FROM BRANCH
 
-@app.route("/sa/<disney_branch>/", )
+@app.route("/sa/<disney_branch>/")
 def sa_from_branch (disney_branch):
     everything = esecuele.get_just_reviews_from_branch(disney_branch)
     #return jsonify(everything)
-    return jsonify([sia.polarity_scores(i["Review_Text"])["compound"] for i in everything])
+    return jsonify([sia.polarity_scores(i["Review_Text"])["compound"]for i in everything])
 
-#getting Reviews & Compound FROM  COUNTRY
 
-@app.route("/sa/<country>/", )
-def sa_from_country (country):
-    everything = esecuele.get_just_reviews_from_country(country)
-    #return jsonify(everything)
-    return jsonify([sia.polarity_scores(i["Review_Text"])["Compound"] for i in everything])
+#getting the compound per year------------------------------------------------------------------------------------
 
-#getting Reviews & Compound FROM YEAR
+@app.route("/avg/<disney_branch>/<year>/")
+def compounds_from_year (disney_branch,year):
+    return jsonify(esecuele.get_compound_per_year(disney_branch, year))
 
-@app.route("/sa/<year>/", )
-def sa_from_year (year):
-    everything = esecuele.get_just_reviews_from_year(year)
-    #return jsonify(everything)
-    return jsonify([sia.polarity_scores(i["Review_Text"])["compound"] for i in everything])
+
+#getting countries ------------------------------------------------------------------------------------
+
+
+@app.route("/countries/")
+def main_countries ():
+    return jsonify(esecuele.get_main_countries())
+
+#getting countries per branch------------------------------------------------------------------------------------
+
+
+@app.route("/countries/<disney_branch>/")
+def main_countries_branch (disney_branch):
+    return jsonify(esecuele.get_main_countries_branch(disney_branch))
+
+
+#getting countries per branch------------------------------------------------------------------------------------
+
+@app.route("/positives/")
+def positives_branch ():
+    return jsonify(esecuele.get_positives_branch ())
+
+
 
 
 ####### POST
